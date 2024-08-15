@@ -9,7 +9,7 @@
 
 #define SPEED_DEFAULT  0.01
 #define TARGET_FPS 60
-
+// damn colors are cool i wish i had them.
 typedef struct {
     char* VertexSource;
     char* FragmentSource;
