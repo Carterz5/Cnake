@@ -243,6 +243,7 @@ int main(void)
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
     
@@ -254,18 +255,18 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         
-        float positions[16] = {
+        float positions[48] = {
             //player
-            p1.xPos - p1.size, (p1.yPos - p1.size)*1.333,
-            p1.xPos + p1.size, (p1.yPos - p1.size)*1.333,
-            p1.xPos + p1.size, (p1.yPos + p1.size)*1.333,
-            p1.xPos - p1.size, (p1.yPos + p1.size)*1.333,
+            p1.xPos - p1.size, (p1.yPos - p1.size)*1.333, 1.0, 0.0, 0.0,
+            p1.xPos + p1.size, (p1.yPos - p1.size)*1.333, 1.0, 0.0, 0.0,
+            p1.xPos + p1.size, (p1.yPos + p1.size)*1.333, 1.0, 0.0, 0.0,
+            p1.xPos - p1.size, (p1.yPos + p1.size)*1.333, 1.0, 0.0, 0.0,
 
             //box
-            coin.xPos - coin.size, (coin.yPos - coin.size)*1.333,
-            coin.xPos + coin.size, (coin.yPos - coin.size)*1.333,
-            coin.xPos + coin.size, (coin.yPos + coin.size)*1.333,
-            coin.xPos - coin.size, (coin.yPos + coin.size)*1.333,
+            coin.xPos - coin.size, (coin.yPos - coin.size)*1.333, 1.0, 1.0, 0.0,
+            coin.xPos + coin.size, (coin.yPos - coin.size)*1.333, 1.0, 1.0, 0.0,
+            coin.xPos + coin.size, (coin.yPos + coin.size)*1.333, 1.0, 1.0, 0.0,
+            coin.xPos - coin.size, (coin.yPos + coin.size)*1.333, 1.0, 1.0, 0.0,
 
         };
 
@@ -298,9 +299,10 @@ int main(void)
 
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBindVertexArray(vao);
-        glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), positions, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 48 * sizeof(float), positions, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
         glDrawArrays(GL_QUADS, 0, 8);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
