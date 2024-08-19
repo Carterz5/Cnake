@@ -41,14 +41,13 @@ int main(void)
 
     glfwSetKeyCallback(window, key_callback);
 
-    int framecount = 0;
-    int score = 0;
-
+    int framecount = 1;
+    
     player p1;
-    p1.xPos = 0.0;
-    p1.yPos = 0.0;
+    p1.xPos = 0.025;
+    p1.yPos = 0.025;
     p1.speed = SPEED_DEFAULT;
-    p1.size = 0.05;
+    p1.size = 0.025;
     
     box coin;
     coin.xPos = 0.0;
@@ -74,6 +73,7 @@ int main(void)
 
     
     int tick = 0;
+    unsigned int difficulty = 30;
     double lasttime = glfwGetTime();
     
     /* Loop until the user closes the window */
@@ -110,7 +110,7 @@ int main(void)
         glBindVertexArray(0);
 
 
-        create_coin(&p1, &coin);
+        create_coin(&p1, &coin, &difficulty);
 
         while (glfwGetTime() < lasttime + 1.0/TARGET_FPS) {
         // TODO: Put the thread to sleep, yield, or simply do nothing
@@ -124,9 +124,15 @@ int main(void)
         glfwPollEvents();
         
         process_inputs(&p1);
-        process_movement(&p1);
+        
+        if (framecount % difficulty == 0){
+            process_movement(&p1);
+        }
 
-
+        framecount += 1;
+        if(framecount > 60){
+            framecount = 1;
+        }
     }
 
     glDeleteProgram(shader);

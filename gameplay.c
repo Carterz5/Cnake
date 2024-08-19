@@ -38,27 +38,38 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void process_movement(player* p1){
 
+    // float up = p1->yPos + p1->size + p1->speed;
+    // float down = p1->yPos - p1->size - p1->speed;
+    // float left = p1->xPos - p1->size - p1->speed;
+    // float right = p1->xPos + p1->size + p1->speed;
+
+    // printf("up is %f\n", up);
+    // printf("down is %f\n", down);
+    // printf("left is %f\n", left);
+    // printf("right is %f\n\n", right);
+
+
     switch (last){
     case UP:
-        if(p1->yPos + p1->size + p1->speed < 1.0f/RES_RATIO){
+        if(p1->yPos + p1->size + p1->speed <= 1.01f/RES_RATIO){
             p1->yPos += p1->speed;
         }
         break;
 
     case DOWN:
-        if(p1->yPos - p1->size - p1->speed > -1.0f/RES_RATIO){
+        if(p1->yPos - p1->size - p1->speed >= -1.01f/RES_RATIO){
             p1->yPos -= p1->speed;
         }
         break;
 
     case LEFT:
-        if(p1->xPos - p1->size - p1->speed > -1){
+        if(p1->xPos - p1->size - p1->speed >= -1.001f){
             p1->xPos -= p1->speed;
         }
         break;
 
     case RIGHT:
-        if(p1->xPos + p1->size + p1->speed < 1){
+        if(p1->xPos + p1->size + p1->speed <= 1.001f){
             p1->xPos += p1->speed;
         }
         break;
@@ -86,15 +97,18 @@ void process_inputs(player* p1){
 
 }
 
-void create_coin(player* p1, box* coin){
-    static int framecount = 0;
+void create_coin(player* p1, box* coin, int* difficulty){
+    static int scoreframe = 0;
 
     if(check_collision(*p1, *coin) == true){
         //printf("I have collided!\n");
-        framecount += 1;
-        if (framecount == 1){
+        scoreframe += 1;
+        if (scoreframe == 1){
             score +=1;
             printf("Score: %d\n", score);
+        }
+        if (*difficulty > 5){
+            *difficulty -= 5;
         }
 
         srand(time(0));
@@ -106,7 +120,7 @@ void create_coin(player* p1, box* coin){
         coin->yPos = random_y;
 
     } else {
-        framecount = 0;
+        scoreframe = 0;
     }
 
 
