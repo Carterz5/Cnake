@@ -8,8 +8,7 @@
 #include <GLFW/glfw3.h>
 #include "snake.h"
 
-#define SPEED_DEFAULT  0.01
-#define TARGET_FPS 60
+
 
 int main(void)
 {
@@ -24,7 +23,7 @@ int main(void)
 
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1024, 768, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(RES_X, RES_Y, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -49,7 +48,7 @@ int main(void)
     p1.xPos = 0.0;
     p1.yPos = 0.0;
     p1.speed = SPEED_DEFAULT;
-    p1.size = 0.08;
+    p1.size = 0.05;
     
     box coin;
     coin.xPos = 0.0;
@@ -75,7 +74,6 @@ int main(void)
 
     
     int tick = 0;
-    unsigned int boostTick = 0;
     double lasttime = glfwGetTime();
     
     /* Loop until the user closes the window */
@@ -84,41 +82,18 @@ int main(void)
         
         float positions[48] = {
             //player
-            p1.xPos - p1.size, (p1.yPos - p1.size)*1.333, 1.0, 0.0, 0.0,
-            p1.xPos + p1.size, (p1.yPos - p1.size)*1.333, 1.0, 0.0, 0.0,
-            p1.xPos + p1.size, (p1.yPos + p1.size)*1.333, 1.0, 0.0, 0.0,
-            p1.xPos - p1.size, (p1.yPos + p1.size)*1.333, 1.0, 0.0, 0.0,
+            p1.xPos - p1.size, (p1.yPos - p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
+            p1.xPos + p1.size, (p1.yPos - p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
+            p1.xPos + p1.size, (p1.yPos + p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
+            p1.xPos - p1.size, (p1.yPos + p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
 
             //box
-            coin.xPos - coin.size, (coin.yPos - coin.size)*1.333, 1.0, 1.0, 0.0,
-            coin.xPos + coin.size, (coin.yPos - coin.size)*1.333, 1.0, 1.0, 0.0,
-            coin.xPos + coin.size, (coin.yPos + coin.size)*1.333, 1.0, 1.0, 0.0,
-            coin.xPos - coin.size, (coin.yPos + coin.size)*1.333, 1.0, 1.0, 0.0,
+            coin.xPos - coin.size, (coin.yPos - coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
+            coin.xPos + coin.size, (coin.yPos - coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
+            coin.xPos + coin.size, (coin.yPos + coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
+            coin.xPos - coin.size, (coin.yPos + coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
 
         };
-
-
-        p1.xMax = p1.xPos + p1.size;
-        p1.xMin = p1.xPos - p1.size;
-        p1.yMax = p1.yPos + p1.size;
-        p1.yMin = p1.yPos - p1.size;
-
-
-        coin.xMax = coin.xPos + coin.size;
-        coin.xMin = coin.xPos - coin.size;
-        coin.yMax = coin.yPos + coin.size;
-        coin.yMin = coin.yPos - coin.size;
-
-        // tick += 1;
-        // if (tick > 1000){
-        //     printf("ymax is %f\n", p1.yMax);
-        //     printf("ymin is %f\n", p1.yMin);
-        //     printf("xmax is %f\n", p1.xMax);
-        //     printf("xmin is %f\n", p1.xMin);
-        //     tick = 0;
-        // }
-
-
 
 
         /* Render here */
@@ -134,26 +109,8 @@ int main(void)
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        if(check_collision(p1, coin) == true){
-            //printf("I have collided!\n");
-            framecount += 1;
-            if (framecount == 1){
-                score +=1;
-                printf("Score: %d\n", score);
-            }
 
-            srand(time(0));
-
-            double random_y = ((double)rand() / RAND_MAX) * ((0.75 - coin.size) * 2) - (0.75 - coin.size);
-            double random_x = ((double)rand() / RAND_MAX) * ((1 - coin.size) * 2) - (1 - coin.size);
-
-            coin.xPos = random_x;
-            coin.yPos = random_y;
-
-        } else {
-            framecount = 0;
-        }
-
+        create_coin(&p1, &coin);
 
         while (glfwGetTime() < lasttime + 1.0/TARGET_FPS) {
         // TODO: Put the thread to sleep, yield, or simply do nothing
@@ -166,29 +123,8 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
         
-        if(UpState > GLFW_RELEASE && p1.yMax + p1.speed < 0.75){
-            p1.yPos += p1.speed;
-        }
-        if(DownState > GLFW_RELEASE && p1.yMin - p1.speed > -0.75){
-            p1.yPos -= p1.speed;
-        }
-        if(RightState > GLFW_RELEASE && p1.xMax + p1.speed < 1){
-            p1.xPos += p1.speed;
-        }
-        if(LeftState > GLFW_RELEASE && p1.xMin - p1.speed > -1){
-            p1.xPos -= p1.speed;
-        }
-        if(SpaceState > GLFW_RELEASE && boostTick < 100){
-            p1.speed = SPEED_DEFAULT * 2;
-            boostTick += 1;
-            //printf("boost is %d\n", boostTick);
-        } else {
-            p1.speed = SPEED_DEFAULT;
-            if (boostTick > 0 && SpaceState == GLFW_RELEASE){
-                boostTick -= 1;
-            }
-            
-        }
+        process_inputs(&p1);
+        process_movement(&p1);
 
 
     }
