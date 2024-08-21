@@ -51,26 +51,42 @@ void process_movement(player* p1){
 
     switch (last){
     case UP:
-        if(p1->yPos + p1->size + p1->speed <= 1.01f/RES_RATIO){
-            p1->yPos += p1->speed;
+        if(p1->position.yPos + p1->position.size + p1->speed <= 1.01f/RES_RATIO){
+            p1->position.yPos += p1->speed;
+        } else{
+            score = 0;
+            p1->position.xPos = P1_XSTART;
+            p1->position.yPos = P1_YSTART;
         }
         break;
 
     case DOWN:
-        if(p1->yPos - p1->size - p1->speed >= -1.01f/RES_RATIO){
-            p1->yPos -= p1->speed;
+        if(p1->position.yPos - p1->position.size - p1->speed >= -1.01f/RES_RATIO){
+            p1->position.yPos -= p1->speed;
+        } else{
+            score = 0;
+            p1->position.xPos = P1_XSTART;
+            p1->position.yPos = P1_YSTART;
         }
         break;
 
     case LEFT:
-        if(p1->xPos - p1->size - p1->speed >= -1.001f){
-            p1->xPos -= p1->speed;
+        if(p1->position.xPos - p1->position.size - p1->speed >= -1.001f){
+            p1->position.xPos -= p1->speed;
+        } else{
+            score = 0;
+            p1->position.xPos = P1_XSTART;
+            p1->position.yPos = P1_YSTART;
         }
         break;
 
     case RIGHT:
-        if(p1->xPos + p1->size + p1->speed <= 1.001f){
-            p1->xPos += p1->speed;
+        if(p1->position.xPos + p1->position.size + p1->speed <= 1.001f){
+            p1->position.xPos += p1->speed;
+        } else{
+            score = 0;
+            p1->position.xPos = P1_XSTART;
+            p1->position.yPos = P1_YSTART;
         }
         break;
 
@@ -107,7 +123,7 @@ void create_coin(player* p1, box* coin, int* difficulty){
             score +=1;
             printf("Score: %d\n", score);
         }
-        if (*difficulty > 5){
+        if (*difficulty > 5 && score % 2 == 0){
             *difficulty -= 5;
         }
 
@@ -135,12 +151,12 @@ bool check_collision(player player, box box){
     
 
     // Check if one quad is to the left of the other
-    if (box.xPos + box.size < player.xPos - player.size || player.xPos + player.size < box.xPos - box.size) {
+    if (box.xPos + box.size < player.position.xPos - player.position.size || player.position.xPos + player.position.size < box.xPos - box.size) {
         return false;
     }
     
     // Check if one quad is above the other
-    if (box.yPos + box.size < player.yPos - player.size || player.yPos + player.size < box.yPos - box.size) {
+    if (box.yPos + box.size < player.position.yPos - player.position.size || player.position.yPos + player.position.size < box.yPos - box.size) {
         return false;
     }
 

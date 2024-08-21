@@ -101,3 +101,60 @@ unsigned int CreateShader(const char* vertexShader, const char* fragmentShader){
 
     return program;
 }
+
+
+unsigned int SetShader(){
+    
+    
+    ShaderProgramSource source = ParseShader("./res/shaders/Basic.shader");
+    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
+    glUseProgram(shader);
+
+
+    return shader;
+}
+
+
+void GLDrawBox(box object){
+    static int calls = 0;
+    static unsigned int vbo[2];
+    static unsigned int vao[2];
+    
+    if (calls == 0){
+        glGenBuffers(2, vbo);
+        glGenVertexArrays(2, vao);
+        glBindVertexArray(vao[0]);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glBindVertexArray(vao[1]);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glBindVertexArray(0);
+
+    };
+    
+    float positions[20] = {
+        object.xPos - object.size, (object.yPos - object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
+        object.xPos + object.size, (object.yPos - object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
+        object.xPos + object.size, (object.yPos + object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
+        object.xPos - object.size, (object.yPos + object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
+
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBindVertexArray(vao[0]);
+    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), positions, GL_STATIC_DRAW);
+
+    if(calls == 0){
+        printf("calls is %d\n", calls);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
+    };
+
+    glDrawArrays(GL_QUADS, 0, 4);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    calls++;
+
+}

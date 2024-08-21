@@ -4,6 +4,23 @@
 #define RES_X 1024.0f
 #define RES_Y 768.0f
 #define RES_RATIO (RES_X / RES_Y)
+#define P1_XSTART 0.025f
+#define P1_YSTART 0.025f
+
+typedef struct {
+    float xPos;
+    float yPos;
+    float color[3];
+    float size;
+} box;
+
+typedef struct {
+    box position;
+    float speed;
+} player;
+
+
+
 
 //Graphics
 
@@ -21,6 +38,8 @@ typedef struct {
 ShaderProgramSource ParseShader(const char* filepath);
 unsigned int CompileShader(unsigned int type, const char* source);
 unsigned int CreateShader(const char* vertexShader, const char* fragmentShader);
+void GLDrawBox(box object);
+unsigned int SetShader();
 
 
 
@@ -39,18 +58,8 @@ typedef enum {
 #define SPEED_DEFAULT  0.05
 #define TARGET_FPS 60
 
-typedef struct {
-    float xPos;
-    float yPos;
-    float size;
-    float speed;
-} player;
 
-typedef struct {
-    float xPos;
-    float yPos;
-    float size;
-} box;
+
 
 void process_inputs(player* p1);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

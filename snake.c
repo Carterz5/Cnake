@@ -19,9 +19,6 @@ int main(void)
         return -1;
 
 
-
-
-
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(RES_X, RES_Y, "Hello World", NULL, NULL);
     if (!window)
@@ -40,80 +37,46 @@ int main(void)
     printf("GL version is |%s|\n", glversion);
 
     glfwSetKeyCallback(window, key_callback);
-
-    int framecount = 1;
-    
+   
     player p1;
-    p1.xPos = 0.025;
-    p1.yPos = 0.025;
+    p1.position.xPos = P1_XSTART;
+    p1.position.yPos = P1_YSTART;
     p1.speed = SPEED_DEFAULT;
-    p1.size = 0.025;
+    p1.position.size = 0.025;
+    p1.position.color[0] = 1.0;
+    p1.position.color[1] = 0.0;
+    p1.position.color[2] = 0.0;
     
     box coin;
     coin.xPos = 0.0;
     coin.yPos = 0.0;
     coin.size = 0.02;
+    coin.color[0] = 1.0;
+    coin.color[1] = 1.0;
+    coin.color[2] = 0.0;
 
+    unsigned int shader = SetShader();
 
-    ShaderProgramSource source = ParseShader("./res/shaders/Basic.shader");
-
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
-
-
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
-    
+    int framecount = 1;
     int tick = 0;
-    unsigned int difficulty = 30;
+    unsigned int difficulty = 20;
     double lasttime = glfwGetTime();
     
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         
-        float positions[48] = {
-            //player
-            p1.xPos - p1.size, (p1.yPos - p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
-            p1.xPos + p1.size, (p1.yPos - p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
-            p1.xPos + p1.size, (p1.yPos + p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
-            p1.xPos - p1.size, (p1.yPos + p1.size)*RES_RATIO, 1.0, 0.0, 0.0,
-
-            //box
-            coin.xPos - coin.size, (coin.yPos - coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
-            coin.xPos + coin.size, (coin.yPos - coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
-            coin.xPos + coin.size, (coin.yPos + coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
-            coin.xPos - coin.size, (coin.yPos + coin.size)*RES_RATIO, 1.0, 1.0, 0.0,
-
-        };
-
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBindVertexArray(vao);
-        glBufferData(GL_ARRAY_BUFFER, 48 * sizeof(float), positions, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
-        glDrawArrays(GL_QUADS, 0, 8);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
+        GLDrawBox(p1.position);
+        GLDrawBox(coin);
 
         create_coin(&p1, &coin, &difficulty);
 
         while (glfwGetTime() < lasttime + 1.0/TARGET_FPS) {
-        // TODO: Put the thread to sleep, yield, or simply do nothing
+
         }
         lasttime += 1.0/TARGET_FPS;
 
@@ -130,7 +93,7 @@ int main(void)
         }
 
         framecount += 1;
-        if(framecount > 60){
+        if(framecount > 120){
             framecount = 1;
         }
     }
