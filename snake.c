@@ -13,6 +13,7 @@
 int main(void)
 {
     GLFWwindow* window;
+    srand(time(0));
 
     /* Initialize the library */
     if (!glfwInit())
@@ -70,8 +71,8 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLDrawBox(p1.position);
-        GLDrawBox(coin);
+        GLDrawBox(&p1.position);
+        GLDrawBox(&coin);
 
         create_coin(&p1, &coin, &difficulty);
 

@@ -36,6 +36,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 }
 
+float generate_random_in_range(float min, float max) {
+    return min + ((float)rand() / (float)RAND_MAX) * (max - min);
+}
+
+
+
 void process_movement(player* p1){
 
     // float up = p1->yPos + p1->size + p1->speed;
@@ -115,9 +121,10 @@ void process_inputs(player* p1){
 
 void create_coin(player* p1, box* coin, int* difficulty){
     static int scoreframe = 0;
+    float random_y = 0.0f;
+    float random_x = 0.0f;
 
     if(check_collision(*p1, *coin) == true){
-        //printf("I have collided!\n");
         scoreframe += 1;
         if (scoreframe == 1){
             score +=1;
@@ -126,18 +133,24 @@ void create_coin(player* p1, box* coin, int* difficulty){
         if (*difficulty > 5 && score % 2 == 0){
             *difficulty -= 5;
         }
+ 
+    } else {
+        scoreframe = 0;
+    }
 
-        srand(time(0));
 
-        double random_y = ((double)rand() / RAND_MAX) * ((0.75 - coin->size) * 2) - (0.75 - coin->size);
-        double random_x = ((double)rand() / RAND_MAX) * ((1 - coin->size) * 2) - (1 - coin->size);
+
+    while(check_collision(*p1, *coin) == true){
+
+        double random_y = generate_random_in_range(-0.75 + coin->size, 0.75 - coin->size);
+        double random_x = generate_random_in_range(-1.0 + coin->size, 1.0 - coin->size);
 
         coin->xPos = random_x;
         coin->yPos = random_y;
 
-    } else {
-        scoreframe = 0;
     }
+
+
 
 
 

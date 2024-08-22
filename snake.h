@@ -38,7 +38,7 @@ typedef struct {
 ShaderProgramSource ParseShader(const char* filepath);
 unsigned int CompileShader(unsigned int type, const char* source);
 unsigned int CreateShader(const char* vertexShader, const char* fragmentShader);
-void GLDrawBox(box object);
+void GLDrawBox(box* object);
 unsigned int SetShader();
 
 

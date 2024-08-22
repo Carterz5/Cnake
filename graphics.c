@@ -115,7 +115,7 @@ unsigned int SetShader(){
 }
 
 
-void GLDrawBox(box object){
+void GLDrawBox(box* object){
     static int calls = 0;
     static unsigned int vbo[2];
     static unsigned int vao[2];
@@ -134,10 +134,10 @@ void GLDrawBox(box object){
     };
     
     float positions[20] = {
-        object.xPos - object.size, (object.yPos - object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
-        object.xPos + object.size, (object.yPos - object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
-        object.xPos + object.size, (object.yPos + object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
-        object.xPos - object.size, (object.yPos + object.size)*RES_RATIO, object.color[0], object.color[1], object.color[2],
+        object->xPos - object->size, (object->yPos - object->size)*RES_RATIO, object->color[0], object->color[1], object->color[2],
+        object->xPos + object->size, (object->yPos - object->size)*RES_RATIO, object->color[0], object->color[1], object->color[2],
+        object->xPos + object->size, (object->yPos + object->size)*RES_RATIO, object->color[0], object->color[1], object->color[2],
+        object->xPos - object->size, (object->yPos + object->size)*RES_RATIO, object->color[0], object->color[1], object->color[2],
 
     };
 
