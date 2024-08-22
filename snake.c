@@ -49,8 +49,8 @@ int main(void)
     p1.position.color[2] = 0.0;
     
     box coin;
-    coin.xPos = 0.0;
-    coin.yPos = 0.0;
+    coin.xPos = -0.2;
+    coin.yPos = -0.2;
     coin.size = 0.02;
     coin.color[0] = 1.0;
     coin.color[1] = 1.0;

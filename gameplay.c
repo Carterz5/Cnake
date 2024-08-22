@@ -44,16 +44,6 @@ float generate_random_in_range(float min, float max) {
 
 void process_movement(player* p1){
 
-    // float up = p1->yPos + p1->size + p1->speed;
-    // float down = p1->yPos - p1->size - p1->speed;
-    // float left = p1->xPos - p1->size - p1->speed;
-    // float right = p1->xPos + p1->size + p1->speed;
-
-    // printf("up is %f\n", up);
-    // printf("down is %f\n", down);
-    // printf("left is %f\n", left);
-    // printf("right is %f\n\n", right);
-
 
     switch (last){
     case UP:
@@ -63,6 +53,7 @@ void process_movement(player* p1){
             score = 0;
             p1->position.xPos = P1_XSTART;
             p1->position.yPos = P1_YSTART;
+            last = NONE;
         }
         break;
 
@@ -73,6 +64,7 @@ void process_movement(player* p1){
             score = 0;
             p1->position.xPos = P1_XSTART;
             p1->position.yPos = P1_YSTART;
+            last = NONE;
         }
         break;
 
@@ -83,6 +75,7 @@ void process_movement(player* p1){
             score = 0;
             p1->position.xPos = P1_XSTART;
             p1->position.yPos = P1_YSTART;
+            last = NONE;
         }
         break;
 
@@ -93,6 +86,7 @@ void process_movement(player* p1){
             score = 0;
             p1->position.xPos = P1_XSTART;
             p1->position.yPos = P1_YSTART;
+            last = NONE;
         }
         break;
 
