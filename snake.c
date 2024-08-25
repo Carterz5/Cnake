@@ -18,13 +18,11 @@ int main(void)
    
     player p1;
     box coin;
-
     init_objects(&p1, &coin);
 
     unsigned int shader = SetShader();
 
     int framecount = 1;
-    int tick = 0;
     unsigned int difficulty = 20;
     double lasttime = glfwGetTime();
     
