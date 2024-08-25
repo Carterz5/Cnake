@@ -35,6 +35,7 @@ typedef struct {
 } ShaderProgramSource;
 
 
+GLFWwindow* init_glfw();
 ShaderProgramSource ParseShader(const char* filepath);
 unsigned int CompileShader(unsigned int type, const char* source);
 unsigned int CreateShader(const char* vertexShader, const char* fragmentShader);
@@ -60,7 +61,7 @@ typedef enum {
 
 
 
-
+void init_objects(player* p1, box* coin);
 void process_inputs(player* p1);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 bool check_collision(player player, box box);

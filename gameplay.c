@@ -151,7 +151,25 @@ void create_coin(player* p1, box* coin, int* difficulty){
 
 }
 
+void init_objects(player* p1, box* coin){
 
+    p1->position.xPos = P1_XSTART;
+    p1->position.yPos = P1_YSTART;
+    p1->speed = SPEED_DEFAULT;
+    p1->position.size = 0.025;
+    p1->position.color[0] = 1.0;
+    p1->position.color[1] = 0.0;
+    p1->position.color[2] = 0.0;
+
+    coin->xPos = -0.2;
+    coin->yPos = -0.2;
+    coin->size = 0.02;
+    coin->color[0] = 1.0;
+    coin->color[1] = 1.0;
+    coin->color[2] = 0.0;
+
+
+}
 
 
 bool check_collision(player player, box box){

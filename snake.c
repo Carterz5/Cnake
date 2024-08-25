@@ -12,49 +12,14 @@
 
 int main(void)
 {
-    GLFWwindow* window;
+    GLFWwindow* window = init_glfw();
     srand(time(0));
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(RES_X, RES_Y, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    if (glewInit() != GLEW_OK){
-        printf("Error!\n");
-    }
-    const char *glversion = glGetString(GL_VERSION);
-    printf("GL version is |%s|\n", glversion);
-
-    glfwSetKeyCallback(window, key_callback);
    
     player p1;
-    p1.position.xPos = P1_XSTART;
-    p1.position.yPos = P1_YSTART;
-    p1.speed = SPEED_DEFAULT;
-    p1.position.size = 0.025;
-    p1.position.color[0] = 1.0;
-    p1.position.color[1] = 0.0;
-    p1.position.color[2] = 0.0;
-    
     box coin;
-    coin.xPos = -0.2;
-    coin.yPos = -0.2;
-    coin.size = 0.02;
-    coin.color[0] = 1.0;
-    coin.color[1] = 1.0;
-    coin.color[2] = 0.0;
+
+    init_objects(&p1, &coin);
 
     unsigned int shader = SetShader();
 

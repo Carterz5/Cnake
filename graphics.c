@@ -158,3 +158,33 @@ void GLDrawBox(box* object){
     calls++;
 
 }
+
+GLFWwindow* init_glfw(){
+
+    GLFWwindow* window;
+
+    /* Initialize the library */
+    if (!glfwInit())
+        return NULL;
+
+
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(RES_X, RES_Y, "Hello World", NULL, NULL);
+    if (!window){
+        glfwTerminate();
+        return NULL;
+    }
+
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
+
+    if (glewInit() != GLEW_OK){
+        printf("Error!\n");
+    }
+    const char *glversion = glGetString(GL_VERSION);
+    printf("GL version is |%s|\n", glversion);
+
+    glfwSetKeyCallback(window, key_callback);
+
+    return window;
+}
