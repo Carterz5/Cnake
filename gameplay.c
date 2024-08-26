@@ -113,25 +113,27 @@ void process_inputs(player* p1){
 
 }
 
-void create_coin(player* p1, box* coin, int* difficulty){
+int create_coin(player* p1, box* coin, unsigned int* difficulty){
     static int scoreframe = 0;
-    float random_y = 0.0f;
-    float random_x = 0.0f;
 
     if(check_collision(*p1, *coin) == true){
         scoreframe += 1;
         if (scoreframe == 1){
             score +=1;
-            printf("Score: %d\n", score);
+            //printf("Score: %d\n", score);
         }
         if (*difficulty > 5 && score % 2 == 0){
             *difficulty -= 5;
         }
+
  
     } else {
         scoreframe = 0;
     }
 
+    if (score < 2){
+        *difficulty = 20;
+    }
 
 
     while(check_collision(*p1, *coin) == true){
@@ -147,7 +149,7 @@ void create_coin(player* p1, box* coin, int* difficulty){
 
 
 
-
+    return score;
 
 }
 
@@ -157,15 +159,15 @@ void init_objects(player* p1, box* coin){
     p1->position.yPos = P1_YSTART;
     p1->speed = SPEED_DEFAULT;
     p1->position.size = 0.025;
-    p1->position.color[0] = 1.0;
-    p1->position.color[1] = 0.0;
+    p1->position.color[0] = 0.0;
+    p1->position.color[1] = 1.0;
     p1->position.color[2] = 0.0;
 
     coin->xPos = -0.2;
     coin->yPos = -0.2;
     coin->size = 0.02;
     coin->color[0] = 1.0;
-    coin->color[1] = 1.0;
+    coin->color[1] = 0.0;
     coin->color[2] = 0.0;
 
 

@@ -3,8 +3,27 @@
 #include <string.h>
 #include <GL/glew.h>
 #include "snake.h"
+#include <ft2build.h>
+#include <cglm/cglm.h>
+#include <cglm/vec3.h>
+#include <cglm/mat4.h> 
+#include <cglm/cam.h> 
+#include <cglm/affine.h>
+#include FT_FREETYPE_H
 
 
+typedef struct {
+    GLuint TextureID;
+    int Size[2];
+    int Bearing[2];
+    unsigned int Advance;
+} Character;
+
+
+Character Characters[255];
+
+unsigned int vbo[2];
+unsigned int vao[2];
 
 
 ShaderProgramSource ParseShader(const char* filepath){
@@ -103,35 +122,20 @@ unsigned int CreateShader(const char* vertexShader, const char* fragmentShader){
 }
 
 
-unsigned int SetShader(){
+unsigned int SetShaders(char* filepath){
     
     
-    ShaderProgramSource source = ParseShader("./res/shaders/Basic.shader");
+    ShaderProgramSource source = ParseShader(filepath);
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
+
 
 
     return shader;
 }
 
 
-void GLDrawBox(box* object){
-    static int calls = 0;
-    static unsigned int vbo[2];
-    static unsigned int vao[2];
-    
-    if (calls == 0){
-        glGenBuffers(2, vbo);
-        glGenVertexArrays(2, vao);
-        glBindVertexArray(vao[0]);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glBindVertexArray(vao[1]);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glBindVertexArray(0);
-
-    };
+void GLDrawBox(unsigned int shaderProgram, box* object){
+    glUseProgram(shaderProgram);
     
     float positions[20] = {
         object->xPos - object->size, (object->yPos - object->size)*RES_RATIO, object->color[0], object->color[1], object->color[2],
@@ -145,17 +149,12 @@ void GLDrawBox(box* object){
     glBindVertexArray(vao[0]);
     glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), positions, GL_STATIC_DRAW);
 
-    if(calls == 0){
-        printf("calls is %d\n", calls);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
-    };
 
     glDrawArrays(GL_QUADS, 0, 4);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    calls++;
+
 
 }
 
@@ -181,10 +180,142 @@ GLFWwindow* init_glfw(){
     if (glewInit() != GLEW_OK){
         printf("Error!\n");
     }
-    const char *glversion = glGetString(GL_VERSION);
+    const unsigned char *glversion = glGetString(GL_VERSION);
     printf("GL version is |%s|\n", glversion);
 
     glfwSetKeyCallback(window, key_callback);
 
     return window;
+}
+
+void init_opengl(){
+
+    glGenBuffers(2, vbo);
+    glGenVertexArrays(2, vao);
+
+    //box rendering
+    glBindVertexArray(vao[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), NULL, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    //text rendering
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glBindVertexArray(vao[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+
+    //unbind
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+}
+
+void load_fonts(){
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)) {
+        fprintf(stderr, "Could not init FreeType Library\n");
+        exit(EXIT_FAILURE);
+    }
+
+    FT_Face face;
+    if (FT_New_Face(ft, "Roboto-Regular.ttf", 0, &face)) {
+        fprintf(stderr, "Failed to load font\n");
+        exit(EXIT_FAILURE);
+    }
+
+    FT_Set_Pixel_Sizes(face, 0, 48);
+
+    for (unsigned char c = 0; c < 128; c++) {
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+            fprintf(stderr, "Failed to load Glyph\n");
+            continue;
+        }
+        
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RED,
+            face->glyph->bitmap.width,
+            face->glyph->bitmap.rows,
+            0,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            face->glyph->bitmap.buffer
+        );
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        Character character = {
+            texture,
+            {face->glyph->bitmap.width, face->glyph->bitmap.rows},
+            {face->glyph->bitmap_left, face->glyph->bitmap_top},
+            face->glyph->advance.x
+        };
+        Characters[c] = character;
+        //printf("glyh: %c bitmap width: %d, bitmap pitch: %d\n", c, face->glyph->bitmap.width, face->glyph->bitmap.pitch);
+        //printf("loaded glyph %c, size: %d - %d, bearing: %d - %d, advance: %ld\n", c, face->glyph->bitmap.width, face->glyph->bitmap.rows,face->glyph->bitmap_left, face->glyph->bitmap_top, face->glyph->advance.x);
+    }
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+}
+
+void RenderText(GLuint shaderProgram, const char* text, float x, float y, float scale, float color[3]) {
+    glUseProgram(shaderProgram);
+    mat4 projection;
+    glm_ortho(0.0f, RES_X, 0.0f, RES_Y, -1.0f, 1.0f, projection);
+    GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, (float*)projection);
+
+    GLint textColorLocation = glGetUniformLocation(shaderProgram, "textColor");
+    glUniform3f(textColorLocation, color[0], color[1], color[2]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(vao[1]);
+
+    for (const char* p = text; *p; p++) {
+        Character ch = Characters[*p];
+
+        float xpos = x + ch.Bearing[0] * scale;
+        float ypos = y - (ch.Size[1] - ch.Bearing[1]) * scale;
+
+        float w = ch.Size[0] * scale;
+        float h = ch.Size[1] * scale;
+        //printf("letter = %c, xpos: %f, ypos: %f, w: %f, h: %f\n", *p, xpos, ypos, w, h);
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },            
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }           
+        };
+        //printf("letter = %c, textureID = %c\n", *p, ch.TextureID );
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        x += (ch.Advance >> 6) * scale;
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
