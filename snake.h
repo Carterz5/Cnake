@@ -14,9 +14,10 @@ typedef struct {
     float size;
 } box;
 
-typedef struct {
+typedef struct player {
     box position;
     float speed;
+    struct player* next;
 } player;
 
 
@@ -44,6 +45,7 @@ unsigned int SetShaders();
 void init_opengl();
 void RenderText(GLuint shaderProgram, const char* text, float x, float y, float scale, float color[3]);
 void load_fonts();
+void GLDrawSnake(unsigned int shaderProgram, player* head);
 
 
 
@@ -64,9 +66,15 @@ typedef enum {
 
 
 
-void init_objects(player* p1, box* coin);
+void init_objects(box* coin);
 void process_inputs(player* p1);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 bool check_collision(player player, box box);
 int create_coin(player* p1, box* coin, unsigned int* difficulty);
 void process_movement(player* p1);
+player* create_snake_node();
+void grow_snake(player* head);
+void move_snake(player* head);
+void destroy_snake(player* head);
+bool check_self_collide(player* head);
+void reset_game(player* p1);

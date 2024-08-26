@@ -21,9 +21,9 @@ int main(void)
     srand(time(0));
 
    
-    player p1;
+    player* p1 = create_snake_node();
     box coin;
-    init_objects(&p1, &coin);
+    init_objects(&coin);
 
     unsigned int basic_shader = SetShaders("./res/shaders/Basic.shader");
     unsigned int text_shader = SetShaders("./res/shaders/Text.shader");
@@ -43,13 +43,15 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLDrawBox(basic_shader, &p1.position);
+        GLDrawSnake(basic_shader, p1);
         GLDrawBox(basic_shader,&coin);
 
         RenderText(text_shader,scoretext, 25.0f, 720.0f, 0.8f,textcolor);
 
 
-        score = create_coin(&p1, &coin, &difficulty);
+
+
+        score = create_coin(p1, &coin, &difficulty);
 
         while (glfwGetTime() < lasttime + 1.0/TARGET_FPS) {
 
@@ -62,10 +64,13 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
         
-        process_inputs(&p1);
+        process_inputs(p1);
         
         if (framecount % difficulty == 0){
-            process_movement(&p1);
+            process_movement(p1);
+        }
+        if (check_self_collide(p1) == true && framecount % difficulty == 0){
+            reset_game(p1);
         }
 
         append_score(scoretext, score);

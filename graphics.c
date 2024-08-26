@@ -158,6 +158,19 @@ void GLDrawBox(unsigned int shaderProgram, box* object){
 
 }
 
+void GLDrawSnake(unsigned int shaderProgram, player* head){
+    int draw = 1;
+    while (head != NULL){
+
+        GLDrawBox(shaderProgram, &head->position);
+        //printf(" i draw %d \n", draw);
+        draw++;
+        head = head->next;
+    }
+    
+
+}
+
 GLFWwindow* init_glfw(){
 
     GLFWwindow* window;

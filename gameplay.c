@@ -48,45 +48,41 @@ void process_movement(player* p1){
     switch (last){
     case UP:
         if(p1->position.yPos + p1->position.size + p1->speed <= 1.01f/RES_RATIO){
+            move_snake(p1);
             p1->position.yPos += p1->speed;
+            
         } else{
-            score = 0;
-            p1->position.xPos = P1_XSTART;
-            p1->position.yPos = P1_YSTART;
-            last = NONE;
+            reset_game(p1);
         }
         break;
 
     case DOWN:
         if(p1->position.yPos - p1->position.size - p1->speed >= -1.01f/RES_RATIO){
+            move_snake(p1);
             p1->position.yPos -= p1->speed;
+            
         } else{
-            score = 0;
-            p1->position.xPos = P1_XSTART;
-            p1->position.yPos = P1_YSTART;
-            last = NONE;
+            reset_game(p1);
         }
         break;
 
     case LEFT:
         if(p1->position.xPos - p1->position.size - p1->speed >= -1.001f){
+            move_snake(p1);
             p1->position.xPos -= p1->speed;
+            
         } else{
-            score = 0;
-            p1->position.xPos = P1_XSTART;
-            p1->position.yPos = P1_YSTART;
-            last = NONE;
+            reset_game(p1);
         }
         break;
 
     case RIGHT:
         if(p1->position.xPos + p1->position.size + p1->speed <= 1.001f){
+            move_snake(p1);
             p1->position.xPos += p1->speed;
+            
         } else{
-            score = 0;
-            p1->position.xPos = P1_XSTART;
-            p1->position.yPos = P1_YSTART;
-            last = NONE;
+            reset_game(p1);
         }
         break;
 
@@ -96,20 +92,26 @@ void process_movement(player* p1){
 }
 
 void process_inputs(player* p1){
-
-    if(UpState > GLFW_RELEASE){
+    static int inputcooldown = 0;
+    if(UpState > GLFW_RELEASE && last != DOWN && inputcooldown == 0){
         last = UP;
+        inputcooldown = 5;
     }
-    if(DownState > GLFW_RELEASE){
+    if(DownState > GLFW_RELEASE && last != UP && inputcooldown == 0){
         last = DOWN;
+        inputcooldown = 5;
     }
-    if(LeftState > GLFW_RELEASE){
+    if(LeftState > GLFW_RELEASE && last != RIGHT && inputcooldown == 0){
         last = LEFT;
+        inputcooldown = 5;
     }
-    if(RightState > GLFW_RELEASE){
+    if(RightState > GLFW_RELEASE && last != LEFT && inputcooldown == 0){
         last = RIGHT;
+        inputcooldown = 5;
     }
-
+    if(inputcooldown > 0){
+        inputcooldown--;
+    }
 
 }
 
@@ -120,6 +122,7 @@ int create_coin(player* p1, box* coin, unsigned int* difficulty){
         scoreframe += 1;
         if (scoreframe == 1){
             score +=1;
+            grow_snake(p1);
             //printf("Score: %d\n", score);
         }
         if (*difficulty > 5 && score % 2 == 0){
@@ -153,15 +156,8 @@ int create_coin(player* p1, box* coin, unsigned int* difficulty){
 
 }
 
-void init_objects(player* p1, box* coin){
+void init_objects(box* coin){
 
-    p1->position.xPos = P1_XSTART;
-    p1->position.yPos = P1_YSTART;
-    p1->speed = SPEED_DEFAULT;
-    p1->position.size = 0.025;
-    p1->position.color[0] = 0.0;
-    p1->position.color[1] = 1.0;
-    p1->position.color[2] = 0.0;
 
     coin->xPos = -0.2;
     coin->yPos = -0.2;
@@ -188,5 +184,103 @@ bool check_collision(player player, box box){
     }
 
     return true;
+
+}
+
+player* create_snake_node(){
+    player* result = malloc(sizeof(player));
+    result->position.xPos = P1_XSTART;
+    result->position.yPos = P1_YSTART;
+    result->position.size = 0.025;
+    result->position.color[0] = 0.0;
+    result->position.color[1] = 1.0;
+    result->position.color[2] = 0.0;
+    result->speed = SPEED_DEFAULT;
+    result->next = NULL;
+    return result;
+}
+
+void grow_snake(player* head){
+
+    player* part = create_snake_node();
+    player* temp = head;
+
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+
+    part->position.xPos = temp->position.xPos;
+    part->position.yPos = temp->position.yPos;
+    temp->next = part;
+
+}
+
+void move_snake(player* head){
+    player* temp = head;
+    float x = temp->position.xPos;
+    float y = temp->position.yPos;
+    float oldx;
+    float oldy;
+
+    while(temp->next != NULL){
+        temp = temp->next;
+        oldx = temp->position.xPos;
+        oldy = temp->position.yPos;
+        temp->position.xPos = x;
+        temp->position.yPos = y;
+        x = oldx;
+        y = oldy;
+
+
+    }
+
+}
+void destroy_snake(player* head){
+    if (head->next != NULL){
+        player* temp = head->next;
+        player* prev;
+        player* next;
+
+        while(temp->next != NULL){
+            next = temp->next;
+            prev = temp;
+            free(prev);
+            temp = next;
+        }
+        free(temp);
+        head->next = NULL;
+    }
+
+
+
+}
+
+bool check_self_collide(player* head){
+
+    if (head->next != NULL){
+        player* temp = head;
+
+
+        while(temp->next != NULL){
+            temp = temp->next;
+            if (head->position.xPos == temp->position.xPos && head->position.yPos == temp->position.yPos){
+                return true;
+
+            }
+        }
+    }
+
+    return false;
+
+}
+
+void reset_game(player* p1){
+
+    score = 0;
+    destroy_snake(p1);
+    p1->position.xPos = P1_XSTART;
+    p1->position.yPos = P1_YSTART;
+    last = NONE;
+
 
 }
