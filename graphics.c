@@ -181,7 +181,7 @@ GLFWwindow* init_glfw(){
 
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(RES_X, RES_Y, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(RES_X, RES_Y, "Snake", NULL, NULL);
     if (!window){
         glfwTerminate();
         return NULL;
