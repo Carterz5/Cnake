@@ -1,13 +1,9 @@
 // test.c
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "snake.h"
+#include "graphics.h"
+#include "gameplay.h"
 
+#define TARGET_FPS 60
 int digits(int n);
 void append_score(char* text, int score);
 

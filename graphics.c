@@ -1,15 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <GL/glew.h>
-#include "snake.h"
-#include <ft2build.h>
-#include <cglm/cglm.h>
-#include <cglm/vec3.h>
-#include <cglm/mat4.h> 
-#include <cglm/cam.h> 
-#include <cglm/affine.h>
-#include FT_FREETYPE_H
+#include "graphics.h"
 
 
 typedef struct {

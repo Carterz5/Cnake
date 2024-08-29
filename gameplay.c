@@ -1,16 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <GLFW/glfw3.h>
-#include "snake.h"
+#include "gameplay.h"
 
 
 int UpState = 0;
 int DownState = 0;
 int LeftState = 0;
 int RightState = 0;
-static Keypress last = NONE;
+static Keypress last = NOTHING;
 int score = 0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -280,7 +275,7 @@ void reset_game(player* p1){
     destroy_snake(p1);
     p1->position.xPos = P1_XSTART;
     p1->position.yPos = P1_YSTART;
-    last = NONE;
+    last = NOTHING;
 
 
 }
