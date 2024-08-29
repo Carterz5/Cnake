@@ -90,19 +90,19 @@ void process_inputs(){
     static int inputcooldown = 0;
     if(UpState > GLFW_RELEASE && last != DOWN && inputcooldown == 0){
         last = UP;
-        inputcooldown = 5;
+        inputcooldown = 2;
     }
     if(DownState > GLFW_RELEASE && last != UP && inputcooldown == 0){
         last = DOWN;
-        inputcooldown = 5;
+        inputcooldown = 2;
     }
     if(LeftState > GLFW_RELEASE && last != RIGHT && inputcooldown == 0){
         last = LEFT;
-        inputcooldown = 5;
+        inputcooldown = 2;
     }
     if(RightState > GLFW_RELEASE && last != LEFT && inputcooldown == 0){
         last = RIGHT;
-        inputcooldown = 5;
+        inputcooldown = 2;
     }
     if(inputcooldown > 0){
         inputcooldown--;
