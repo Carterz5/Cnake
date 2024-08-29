@@ -86,7 +86,7 @@ void process_movement(player* p1){
     }
 }
 
-void process_inputs(player* p1){
+void process_inputs(){
     static int inputcooldown = 0;
     if(UpState > GLFW_RELEASE && last != DOWN && inputcooldown == 0){
         last = UP;

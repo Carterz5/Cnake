@@ -1,7 +1,0 @@
-gcc main.c -lGL -lGLU -lX11
-
-gcc test.c -lglfw -lGL -lGLU -lX11
-
-gcc snake.c graphics.c gameplay.c -lGLEW -lglfw -lGL -lGLU -lX11
-
-gcc snake.c graphics.c gameplay.c -lGLEW -lglfw -lGL -lGLU -lX11 -lfreetype -I/usr/include/freetype2 -I/usr/include/libpng16

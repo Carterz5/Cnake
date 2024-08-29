@@ -229,7 +229,7 @@ void load_fonts(){
     }
 
     FT_Face face;
-    if (FT_New_Face(ft, "Roboto-Regular.ttf", 0, &face)) {
+    if (FT_New_Face(ft, "./assets/Roboto-Regular.ttf", 0, &face)) {
         fprintf(stderr, "Failed to load font\n");
         exit(EXIT_FAILURE);
     }
