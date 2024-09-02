@@ -1,6 +1,8 @@
 #include "graphics.h"
 
 
+#define BUFFER_SIZE 1024
+
 typedef struct {
     GLuint TextureID;
     int Size[2];
@@ -15,7 +17,7 @@ unsigned int vbo[2];
 unsigned int vao[2];
 
 
-ShaderProgramSource ParseShader(const char* filepath){
+ShaderProgramSource ParseShader(const char* filepath) {
     FILE* file = fopen(filepath, "r");
     if (!file) {
         printf("Could not open file: %s\n", filepath);
@@ -27,36 +29,55 @@ ShaderProgramSource ParseShader(const char* filepath){
     source.FragmentSource = NULL;
 
     ShaderType type = NONE;
-    char* line = NULL;
-    size_t len = 0;
-    int read;
+    char buffer[BUFFER_SIZE];
     char* vertexShader = NULL;
     char* fragmentShader = NULL;
     size_t vertexSize = 0;
     size_t fragmentSize = 0;
 
-    while ((read = getline(&line, &len, file)) != -1) {
-        if (strstr(line, "#shader") != NULL) {
-            if (strstr(line, "vertex") != NULL) {
+    while (fgets(buffer, BUFFER_SIZE, file)) {
+        size_t len = strlen(buffer);
+        
+        // if (buffer[len - 1] == '\n') {
+        //     buffer[len - 1] = '\0';  // Remove trailing newline character
+        // }
+
+        if (strstr(buffer, "#shader") != NULL) {
+            if (strstr(buffer, "vertex") != NULL) {
                 type = VERTEX;
-            } else if (strstr(line, "fragment") != NULL) {
+            } else if (strstr(buffer, "fragment") != NULL) {
                 type = FRAGMENT;
             }
         } else {
             if (type == VERTEX) {
-                vertexShader = realloc(vertexShader, vertexSize + read + 1);
-                strcpy(vertexShader + vertexSize, line);
-                vertexSize += read;
+                vertexShader = realloc(vertexShader, vertexSize + len + 1);
+                if (!vertexShader) {
+                    printf("Memory allocation failed\n");
+                    exit(1);
+                }
+                strcpy(vertexShader + vertexSize, buffer);
+                vertexSize += len;
             } else if (type == FRAGMENT) {
-                fragmentShader = realloc(fragmentShader, fragmentSize + read + 1);
-                strcpy(fragmentShader + fragmentSize, line);
-                fragmentSize += read;
+                fragmentShader = realloc(fragmentShader, fragmentSize + len + 1);
+                if (!fragmentShader) {
+                    printf("Memory allocation failed\n");
+                    exit(1);
+                }
+                strcpy(fragmentShader + fragmentSize, buffer);
+                fragmentSize += len;
             }
         }
     }
 
     fclose(file);
-    free(line);
+
+    // Ensure the buffers are null-terminated
+    if (vertexShader) {
+        vertexShader[vertexSize] = '\0';
+    }
+    if (fragmentShader) {
+        fragmentShader[fragmentSize] = '\0';
+    }
 
     source.VertexSource = vertexShader;
     source.FragmentSource = fragmentShader;
@@ -226,7 +247,7 @@ void load_fonts(){
     }
 
     FT_Face face;
-    if (FT_New_Face(ft, "./assets/Roboto-Regular.ttf", 0, &face)) {
+    if (FT_New_Face(ft, "../assets/Roboto-Regular.ttf", 0, &face)) {
         fprintf(stderr, "Failed to load font\n");
         exit(EXIT_FAILURE);
     }

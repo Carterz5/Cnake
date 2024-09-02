@@ -2,7 +2,7 @@
 CC = gcc
 
 # Executable name
-TARGET = bin/Snake.out
+TARGET = bin/Snake
 
 # Source and include directories
 SRC_DIR = src

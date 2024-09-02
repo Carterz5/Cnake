@@ -20,8 +20,8 @@ int main(void){
     box coin;
     init_objects(&coin);
 
-    unsigned int basic_shader = SetShaders("./shaders/Basic.glsl");
-    unsigned int text_shader = SetShaders("./shaders/Text.glsl");
+    unsigned int basic_shader = SetShaders("../shaders/Basic.glsl");
+    unsigned int text_shader = SetShaders("../shaders/Text.glsl");
 
     int framecount = 1;
     unsigned int difficulty = 20;
