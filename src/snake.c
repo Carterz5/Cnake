@@ -64,10 +64,9 @@ int main(void){
         if (framecount % difficulty == 0){
             process_movement(p1);
         }
-        if (check_self_collide(p1) == true && framecount % difficulty == 0){
+        if (check_self_collide(p1) == true ){
             reset_game(p1);
         }
-
         append_score(scoretext, score);
 
         framecount += 1;

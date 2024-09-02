@@ -31,5 +31,6 @@ void move_snake(player* head);
 void destroy_snake(player* head);
 bool check_self_collide(player* head);
 void reset_game(player* p1);
+bool check_coin_spawn(player* p1, box coin);
 
 #endif

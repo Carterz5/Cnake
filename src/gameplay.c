@@ -134,7 +134,7 @@ int create_coin(player* p1, box* coin, unsigned int* difficulty){
     }
 
 
-    while(check_collision(*p1, *coin) == true){
+    while(check_coin_spawn(p1, *coin) == true){
 
         double random_y = generate_random_in_range(-0.75 + coin->size, 0.75 - coin->size);
         double random_x = generate_random_in_range(-1.0 + coin->size, 1.0 - coin->size);
@@ -251,17 +251,18 @@ void destroy_snake(player* head){
 }
 
 bool check_self_collide(player* head){
-
+    unsigned int loops = 0;
     if (head->next != NULL){
         player* temp = head;
 
 
         while(temp->next != NULL){
             temp = temp->next;
-            if (head->position.xPos == temp->position.xPos && head->position.yPos == temp->position.yPos){
+            if (head->position.xPos == temp->position.xPos && head->position.yPos == temp->position.yPos && loops > 0){
                 return true;
 
             }
+            loops++;
         }
     }
 
@@ -276,6 +277,28 @@ void reset_game(player* p1){
     p1->position.xPos = P1_XSTART;
     p1->position.yPos = P1_YSTART;
     last = NOTHING;
+
+
+}
+
+bool check_coin_spawn(player* p1, box coin){
+    player* temp = p1;
+
+    while(temp->next != NULL){
+        if (check_collision(*temp, coin) == true){
+            return true;
+        }
+        temp = temp->next;
+
+
+    }
+
+    if (check_collision(*temp, coin) == true){
+        return true;
+    } else {
+        return false;
+    }
+
 
 
 }
