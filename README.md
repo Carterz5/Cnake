@@ -10,7 +10,7 @@ sudo apt install libfreetype6-dev
 sudo apt install libcglm-dev
 git clone https://github.com/Carterz5/Cnake.git
 
-cd C_snek
+cd Cnake
 make
 
 ```
