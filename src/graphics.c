@@ -18,7 +18,6 @@ Character Characters[255];
 unsigned int vbo[2];
 unsigned int vao[2];
 unsigned int texture_ID_array[4];
-unsigned int testtex;
 
 
 ShaderProgramSource ParseShader(const char* filepath) {
@@ -293,6 +292,7 @@ void init_opengl(){
 }
 
 void load_textures(){
+
 
     glGenTextures(4, texture_ID_array);
     glBindTexture(GL_TEXTURE_2D, texture_ID_array[0]);

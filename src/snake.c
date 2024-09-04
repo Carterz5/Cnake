@@ -15,7 +15,6 @@ int main(void){
     load_fonts();
     load_textures();
     srand(time(0));
-
    
     player* p1 = create_snake_node();
     box coin;
