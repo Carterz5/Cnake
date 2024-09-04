@@ -17,6 +17,7 @@
 
 
 
+
 typedef enum {
     NONE = -1, VERTEX = 0, FRAGMENT = 1
 } ShaderType;
@@ -32,10 +33,11 @@ GLFWwindow* init_glfw();
 ShaderProgramSource ParseShader(const char* filepath);
 unsigned int CompileShader(unsigned int type, const char* source);
 unsigned int CreateShader(const char* vertexShader, const char* fragmentShader);
-void GLDrawBox(unsigned int shaderProgram, box* object);
+void GLDrawBox(unsigned int shaderProgram, unsigned int textureID, box* object);
 unsigned int SetShaders();
 void init_opengl();
 void RenderText(GLuint shaderProgram, const char* text, float x, float y, float scale, float color[3]);
+void load_textures();
 void load_fonts();
 void GLDrawSnake(unsigned int shaderProgram, player* head);
 

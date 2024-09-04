@@ -13,6 +13,7 @@ int main(void){
     GLFWwindow* window = init_glfw();
     init_opengl();
     load_fonts();
+    load_textures();
     srand(time(0));
 
    
@@ -39,7 +40,7 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
 
         GLDrawSnake(basic_shader, p1);
-        GLDrawBox(basic_shader,&coin);
+        GLDrawBox(basic_shader, 3, &coin);
 
         RenderText(text_shader,scoretext, 25.0f, 720.0f, 0.8f,textcolor);
 
@@ -63,10 +64,11 @@ int main(void){
         
         if (framecount % difficulty == 0){
             process_movement(p1);
+            if (check_self_collide(p1) == true ){
+                reset_game(p1);
+            }
         }
-        if (check_self_collide(p1) == true ){
-            reset_game(p1);
-        }
+
         append_score(scoretext, score);
 
         framecount += 1;
