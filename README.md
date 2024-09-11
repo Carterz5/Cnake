@@ -30,13 +30,15 @@ pacman -S mingw-w64-ucrt-x86_64-zlib
 pacman -S mingw-w64-ucrt-x86_64-harfbuzz
 pacman -S mingw-w64-ucrt-x86_64-bzip2
 pacman -S mingw-w64-ucrt-x86_64-graphite2
+pacman -S mingw-w64-ucrt-x86_64-openal
+pacman -S mingw-w64-ucrt-x86_64-freealut
 pacman -S make
 pacman -S git
 
 git clone https://github.com/Carterz5/Cnake.git
 
 cd Cnake
-create bin folder
+
 
 make
 ```
