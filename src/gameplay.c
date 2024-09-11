@@ -6,6 +6,8 @@ int UpState = 0;
 int DownState = 0;
 int LeftState = 0;
 int RightState = 0;
+int SpaceState = 0;
+int debug = 0;
 static Keypress last = NOTHING;
 int score = 0;
 
@@ -23,6 +25,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         break;
     case GLFW_KEY_RIGHT:
         RightState = action;
+        break;
+    case GLFW_KEY_SPACE:
+        SpaceState = action;
         break;
     default:
         break;
@@ -109,6 +114,9 @@ void process_inputs(){
         last = RIGHT;
         inputcooldown = 2;
     }
+    if(SpaceState > GLFW_RELEASE && debug == 1){
+        score += 1;
+    }
     if(inputcooldown > 0){
         inputcooldown--;
     }
@@ -122,7 +130,13 @@ int create_coin(player* p1, box* coin, unsigned int* difficulty){
         scoreframe += 1;
         if (scoreframe == 1){
             score +=1;
-            play_sound("../assets/eating.wav");
+            play_sound("../assets/eating2.wav");
+            if (score == 50){
+                play_sound("../assets/greatjob.wav");
+            } else if (score == 100){
+                play_sound("../assets/100.wav");
+            }
+        
             grow_snake(p1);
             //printf("Score: %d\n", score);
         }

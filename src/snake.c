@@ -31,7 +31,7 @@ int main(void){
     double lasttime = glfwGetTime();
     float textcolor[3] = {1.0f, 1.0f, 1.0f};
     char scoretext[20] = "Score: ";
-    loop_sound("../assets/snake_song.wav");
+    loop_sound("../assets/snake_song_2.wav");
     
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -70,6 +70,7 @@ int main(void){
                 reset_game(p1);
             }
         }
+    
 
         append_score(scoretext, score);
 
