@@ -2,6 +2,7 @@
 #include <time.h>
 #include "graphics.h"
 #include "gameplay.h"
+#include "audio.h"
 
 #define TARGET_FPS 60
 int digits(int n);
@@ -14,6 +15,7 @@ int main(void){
     init_opengl();
     load_fonts();
     load_textures();
+    alutInit(0,0);
     srand(time(0));
    
     player* p1 = create_snake_node();
@@ -29,6 +31,7 @@ int main(void){
     double lasttime = glfwGetTime();
     float textcolor[3] = {1.0f, 1.0f, 1.0f};
     char scoretext[20] = "Score: ";
+    loop_sound("../assets/snake_song.wav");
     
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

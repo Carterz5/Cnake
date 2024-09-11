@@ -8,6 +8,8 @@ sudo apt install libglfw3
 sudo apt install libglfw3-dev
 sudo apt install libfreetype6-dev
 sudo apt install libcglm-dev
+sudo apt install libopenal-dev
+sudo apt install libalut-dev
 git clone https://github.com/Carterz5/Cnake.git
 
 cd Cnake

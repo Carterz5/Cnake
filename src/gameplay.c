@@ -1,4 +1,5 @@
 #include "gameplay.h"
+#include "audio.h"
 
 
 int UpState = 0;
@@ -121,6 +122,7 @@ int create_coin(player* p1, box* coin, unsigned int* difficulty){
         scoreframe += 1;
         if (scoreframe == 1){
             score +=1;
+            play_sound("../assets/eating.wav");
             grow_snake(p1);
             //printf("Score: %d\n", score);
         }
@@ -249,6 +251,7 @@ void move_snake(player* head){
 
 }
 void destroy_snake(player* head){
+    play_sound("../assets/ouch.wav");
     if (head->next != NULL){
         player* temp = head->next;
         player* prev;

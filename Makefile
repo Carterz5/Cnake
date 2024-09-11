@@ -10,7 +10,7 @@ INC_DIR = include
 BUILD_DIR = build
 
 # Source files
-SRCS = $(SRC_DIR)/snake.c $(SRC_DIR)/graphics.c $(SRC_DIR)/gameplay.c
+SRCS = $(SRC_DIR)/snake.c $(SRC_DIR)/graphics.c $(SRC_DIR)/gameplay.c $(SRC_DIR)/audio.c
 
 # Object files (build directory + source file name with .o extension)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
@@ -24,7 +24,7 @@ ifeq ($(OS), Windows_NT)
 else
     # Linux-specific settings
     INCLUDES = -I$(INC_DIR) -I/usr/include/freetype2 -I/usr/include/libpng16
-    LIBS = -lm -lglfw -lGLEW -lGL -lfreetype 
+    LIBS = -lm -lglfw -lGLEW -lGL -lfreetype -lopenal -lalut
     LDFLAGS = $(LIBS)
 endif
 
