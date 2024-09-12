@@ -96,7 +96,7 @@ void process_movement(player* p1){
     }
 }
 
-void process_inputs(){
+void process_inputs(player* head){
     static int inputcooldown = 0;
     if(UpState > GLFW_RELEASE && last != DOWN && inputcooldown == 0){
         last = UP;
@@ -114,8 +114,10 @@ void process_inputs(){
         last = RIGHT;
         inputcooldown = 2;
     }
-    if(SpaceState > GLFW_RELEASE && debug == 1){
+    if(SpaceState > GLFW_RELEASE && debug == 1 && inputcooldown == 0){
         score += 1;
+        grow_snake(head);
+        inputcooldown = 10;
     }
     if(inputcooldown > 0){
         inputcooldown--;
